@@ -6,11 +6,14 @@
 package graphs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -25,10 +28,17 @@ public class Graph {
     }
     
     public void addEdge(String src, String dest, int weight, boolean directed){
-        Vertex srcV = new Vertex(src);
-        vertexMap.put(src, srcV);
-        Vertex destV = new Vertex(dest);
-        vertexMap.put(dest, destV);
+        Vertex srcV = vertexMap.get(src);
+        if(srcV == null){
+             srcV = new Vertex(src);
+             vertexMap.put(src, srcV);
+        }
+        Vertex destV = vertexMap.get(dest);
+        if(destV == null){
+            destV = new Vertex(dest);
+            vertexMap.put(dest, destV);
+        }
+        
         
         Edge edge = new Edge(srcV, destV, weight, directed);
     }
@@ -58,20 +68,23 @@ public class Graph {
         graph.addEdge("6", "7", 3, false);
         graph.addEdge("5", "8", 2, false);
         graph.dfs(graph.vertexMap.get("1"));
+        System.out.println("BFS:");
+        graph.bfs(graph.vertexMap.get("1"));
     }
     
     public void dfs(Vertex s){
         LinkedList<Vertex> stack = new LinkedList();
-        HashMap<Vertex, Boolean> visitedMap = new HashMap();
-        visitedMap.put(s, true);
+        HashSet<Vertex> visitedMap = new HashSet();
+        //visitedMap.add(s);
         
         stack.push(s);
         
         while(!stack.isEmpty()){
             
             Vertex curr = stack.pop();
-            if(!visitedMap.get(curr).booleanValue()){
-                visitedMap.put(curr, Boolean.TRUE);
+            //System.out.println(Arrays.toString(curr.getOutgoing().keySet().toArray()));
+            if(!visitedMap.contains(curr)){
+                visitedMap.add(curr);
                 System.out.println(curr.getName());
                 Iterator<Vertex> itr = curr.getOutgoing().keySet().iterator();
                 while(itr.hasNext()){
@@ -79,6 +92,24 @@ public class Graph {
                 } 
             }
 
+        }
+    }
+    
+    public void bfs(Vertex s){
+        Queue<Vertex> queue = new LinkedList();
+        HashSet<Vertex> visitedMap = new HashSet();
+        queue.add(s);
+        
+        while(!queue.isEmpty()){
+            Vertex curr = queue.poll();
+            if(!visitedMap.contains(curr)){
+                visitedMap.add(curr);
+                System.out.println(curr.getName());
+                Iterator<Vertex> itr = curr.getOutgoing().keySet().iterator();
+                while(itr.hasNext()){
+                    queue.add(itr.next());
+                } 
+            }
         }
     }
 }

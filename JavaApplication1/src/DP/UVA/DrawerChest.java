@@ -44,9 +44,9 @@ class DrawerChest {
         }
         BigInteger retValue = BigInteger.valueOf(0);
         if(n1 > 0){
-            retValue = countLockedDrawers(n1-1, p).divide(BigInteger.valueOf(2));
+            
             if(n1 > 1){
-                retValue = retValue.add(countLockedDrawers(n1-2, p).divide(BigInteger.valueOf(2)));
+                retValue = countLockedDrawers(n1-2, p).multiply(BigInteger.valueOf(2));
             }
             if(p > 0){
                 retValue = retValue.add(countLockedDrawers(n1-1, p-1));
