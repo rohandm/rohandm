@@ -6,10 +6,14 @@
 package DP.UVA;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  *
@@ -18,18 +22,18 @@ import java.util.Scanner;
 class CoinChange {
     static Map<Integer, Integer> cntList = new HashMap();
     static int[] denominations = new int[]{1, 5, 10, 25, 50};
-    HashSet<String> combinationSet = new HashSet();
+    static Set<String> combinationSet = new HashSet();
     public static void main(String args[]){
         
         Scanner scan = new Scanner(System.in);
         
         int n = scan.nextInt();
         int arr[] = new int[5];
-        System.out.println(combinations(n, arr));
-       
+        combinations(n, "");
+       System.out.println(combinationSet.size());
     }
 
-    private static int combinations(int n, int[]  arr) {
+    private static int combinations(int n, String s) {
         if(cntList.containsKey(n)){
             return cntList.get(n);
         }
@@ -40,11 +44,16 @@ class CoinChange {
         
         for(int i = 0; i < denominations.length; i++){
             if(n == denominations[i]){
+                s = s + ","+denominations[i];
                 ret += 1;
+                String[] strArr = s.split(",");
+                Arrays.sort(strArr);
+                combinationSet.add(Arrays.toString(strArr));
+                //System.out.println(s);
             }
             else{
-                arr[i]++;
-                ret += combinations(n-denominations[i], arr);
+                s = s + ","+denominations[i];
+                ret += combinations(n-denominations[i], s);
             }
         }
         return ret;
