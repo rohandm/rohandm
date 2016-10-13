@@ -21,6 +21,7 @@ class DrawerChest {
         for(int i = 0; i < 65; i++){
             Arrays.fill(lockedDrawers[i], BigInteger.valueOf(-1));
         }
+        lockedDrawers[0][0] = BigInteger.valueOf(0);
         lockedDrawers[1][1] = BigInteger.valueOf(1);
         lockedDrawers[1][0] = BigInteger.valueOf(1);
         lockedDrawers[2][0] = BigInteger.valueOf(2);
@@ -52,6 +53,9 @@ class DrawerChest {
                 retValue = retValue.add(countLockedDrawers(n1-1, p-1));
             }
         }
-        return retValue;
+        if(n1 > 0 && p > 1){
+                lockedDrawers[n1][p] = lockedDrawers[n1][p].add(countLockedDrawers(n1-1, p-1));
+        }
+        return lockedDrawers[n1][p];
     }
 }
