@@ -20,6 +20,7 @@ class CuttingSticks {
         int len = scan.nextInt();
         int n = scan.nextInt();
         inputArr = new int[n];
+        List list = 
         for(int i = 0; i < n ; i++){
             inputArr[i] = scan.nextInt();
         }
@@ -28,7 +29,7 @@ class CuttingSticks {
         for(int[] subArr: arr){
             Arrays.fill(subArr, Integer.MAX_VALUE);
         }
-        int cost = Integer.MAX_VALUE;
+        int cost = cost(len, i);
         
         for(int i = 0; i < n; i++){
             cost = Math.min(cost, cost(len, i));
