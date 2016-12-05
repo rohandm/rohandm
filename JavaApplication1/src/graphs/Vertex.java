@@ -15,9 +15,18 @@ public class Vertex {
     private HashMap<Vertex, Edge> incoming = new HashMap<Vertex, Edge>();
     private HashMap<Vertex, Edge> outgoing = new HashMap<Vertex, Edge>();
     private String name = "";
+    private int dist = Integer.MAX_VALUE;
+    private boolean visited = false;
+    private String visitedVertices = "";
 
     Vertex(String src){
         name = src;
+    }
+    
+    public void clear(){
+        setDist(Integer.MAX_VALUE);
+        setVisited(false);
+        setVisitedVertices("");
     }
     /**
      * @return the incoming
@@ -87,6 +96,53 @@ public class Vertex {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the dist
+     */
+    public int getDist() {
+        return dist;
+    }
+
+    /**
+     * @param dist the dist to set
+     */
+    public void setDist(int dist) {
+        this.dist = dist;
+    }
+
+    /**
+     * @return the visited
+     */
+    public boolean isVisited() {
+        return visited;
+    }
+
+    /**
+     * @param visited the visited to set
+     */
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
+    /**
+     * @return the visitedVertices
+     */
+    public String getVisitedVertices() {
+        return visitedVertices;
+    }
+
+    @Override
+    public String toString() {
+        return "Vertex{" + "name=" + name + ", dist=" + dist + ", visitedVertices=" + visitedVertices + '}';
+    }
+
+    /**
+     * @param visitedVertices the visitedVertices to set
+     */
+    public void setVisitedVertices(String visitedVertices) {
+        this.visitedVertices = visitedVertices;
     }
             
 }

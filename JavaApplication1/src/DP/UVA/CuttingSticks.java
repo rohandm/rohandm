@@ -6,6 +6,7 @@
 package DP.UVA;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -13,48 +14,44 @@ import java.util.Scanner;
  * @author rohan_000
  */
 class CuttingSticks {
-    static int[][] arr;
+    static HashMap costMap = new HashMap();
     static int[] inputArr;
     public static void main(String args[]){
         Scanner scan = new Scanner(System.in);
         int len = scan.nextInt();
         int n = scan.nextInt();
-        inputArr = new int[n];
-        List list = 
+        inputArr = new int[n]; 
         for(int i = 0; i < n ; i++){
-            inputArr[i] = scan.nextInt();
+            inputArr[i] = scan.nextInt()-1;
         }
+        int cost = cost(0, len - 1);
         
-        arr = new int[len][n];
-        for(int[] subArr: arr){
-            Arrays.fill(subArr, Integer.MAX_VALUE);
-        }
-        int cost = cost(len, i);
-        
-        for(int i = 0; i < n; i++){
-            cost = Math.min(cost, cost(len, i));
-        }
         System.out.println(cost);
     }
     
-    static int cost(int len, int ind){
-        if(arr[len-1][ind] < Integer.MAX_VALUE){
-            return arr[len-1][ind];
+    static int cost(int startInd, int endInd){
+        if(startInd >= endInd){
+            return 0;
+        }
+        int retValue = Integer.MAX_VALUE;
+        if(costMap.containsKey(startInd+"_"+endInd)){
+            return (Integer)costMap.get(startInd+"_"+endInd);
         }
         
-        if(len == inputArr[ind]){
-            arr[len-1][ind] = len;
-            return len;
+        for(int i = 0; i < inputArr.length; i++){
+            if(inputArr[i] > startInd && inputArr[i] < endInd){
+                int s1 = cost(startInd, inputArr[i]);
+                int s2 = cost(inputArr[i]+1, endInd);
+                //if(s1 == Integer.MAX_VALUE && s2 == Integer.MAX_VALUE){
+                    retValue = Math.min(retValue, (endInd-startInd+1)+s1+s2); 
+                //}
+            }
         }
-        
-        int cost = Integer.MAX_VALUE;
-        
-        for(int i = 0; i < ind; i++){
-            cost = Math.min(cost, cost(len, i));
+        if(Math.abs(retValue) == Integer.MAX_VALUE){
+            retValue = 0;
         }
-        if(cost < Integer.MAX_VALUE){
-            arr[len-1][ind] = len+cost;
-        }
-        return arr[len-1][ind];
+        costMap.put(startInd+"_"+endInd, Math.abs(retValue));
+        System.out.println(startInd+"_"+endInd+":"+retValue);
+        return (Integer)costMap.get(startInd+"_"+endInd);
     }
 }

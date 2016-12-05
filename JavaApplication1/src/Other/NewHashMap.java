@@ -11,14 +11,14 @@ import java.util.LinkedList;
  *
  * @author ROHANME
  */
-public class HashMap<T, T1> {
+public class NewHashMap<T, T1> {
     private int key = 0;
     private LinkedList[] valueListArr;
     public static void main(String args[]){
         
     }
     
-    HashMap(){
+    NewHashMap(){
         valueListArr = new LinkedList[50];
     }
     
