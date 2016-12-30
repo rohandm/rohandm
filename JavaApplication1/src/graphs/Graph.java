@@ -5,188 +5,122 @@
  */
 package graphs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  *
  * @author rohan_000
  */
 public class Graph {
-
-    private void clear() {
-        for(Vertex v: vertexMap.values()){
-            v.clear();
-        }
-    }
-    private Map<String, Vertex> vertexMap;
+    Map<String, Vertex> vertexMap = new HashMap();
+    List<Edge> edgeList = new ArrayList();
+    Map<Vertex, Vertex> parentMap = new HashMap();
     
-    public Graph(){
-        vertexMap = new HashMap();
-    }
-    
-    public void addEdge(String src, String dest, int weight, boolean directed){
-        Vertex srcV = vertexMap.get(src);
-        if(srcV == null){
-             srcV = new Vertex(src);
-             vertexMap.put(src, srcV);
-        }
-        Vertex destV = vertexMap.get(dest);
-        if(destV == null){
-            destV = new Vertex(dest);
-            vertexMap.put(dest, destV);
-        }
-        
-        
-        Edge edge = new Edge(srcV, destV, weight, directed);
-    }
-
-    /**
-     * @return the vertexList
-     */
-    public Map<String, Vertex> getVertexList() {
-        return vertexMap;
-    }
-
-    /**
-     * @param vertexList the vertexList to set
-     */
-    public void setVertexList(Map<String, Vertex> vertexList) {
-        this.vertexMap = vertexList;
-    }
     
     public static void main(String args[]){
+        //Graph graph = GraphUtil.generateGraph(20, true);
+        //List<String> list = new ArrayList(graph.vertexMap.keySet());
+        //System.out.println(graph.maxFlow(list.get(0), list.get(15)));
         Graph graph = new Graph();
-        graph.addEdge("1", "2", 3, false);
-        graph.addEdge("2", "3", 2, false);
-        graph.addEdge("3", "4", 1, false);
-        graph.addEdge("1", "4", 6, false);
-        graph.addEdge("3", "5", 4, false);
-        graph.addEdge("4", "6", 3, false);
-        graph.addEdge("6", "7", 3, false);
-        graph.addEdge("5", "8", 2, false);
-        graph.dfs(graph.vertexMap.get("1"));
-        System.out.println("BFS:");
-        //graph.bfs(graph.vertexMap.get("1"));
+        graph.addEdge("S", "V1", 0, 13, true);
+        graph.addEdge("V1", "V2", 0, 5, true);
+        graph.addEdge("V2", "D", 0, 3, true);
+        graph.addEdge("S", "V3", 0, 10, true);
+        graph.addEdge("V3", "V4", 0, 35, true);
+        graph.addEdge("V4", "D", 0, 20, true);
+        graph.addEdge("V2", "V3", 0, 50, true);
+        System.out.println(graph.vertexMap);
+        System.out.println(graph.maxFlow("S", "D"));
     }
     
-    public void dfs(Vertex s){
-        LinkedList<Vertex> stack = new LinkedList();
-        HashSet<Vertex> visitedMap = new HashSet();
-        //visitedMap.add(s);
-        
-        stack.push(s);
-        
-        while(!stack.isEmpty()){
-            
-            Vertex curr = stack.pop();
-            //System.out.println(Arrays.toString(curr.getOutgoing().keySet().toArray()));
-            if(!visitedMap.contains(curr)){
-                visitedMap.add(curr);
-                System.out.println(curr.getName());
-                Iterator<Vertex> itr = curr.getOutgoing().keySet().iterator();
-                while(itr.hasNext()){
-                    stack.push(itr.next());
-                } 
-            }
-
+    Graph(Graph origGraph){
+        for(Edge e: origGraph.edgeList){
+            this.addEdge(new Edge(e));
         }
     }
+
+    Graph() {
+    }
     
-    public void bfs(String s){
-        clear();
-        Vertex source = vertexMap.get(s);
+    public void addEdge(String source, String dest, int weight1, int capacity1, boolean directed1){
+        Vertex source1 = vertexMap.get(source);
+        if(source1 == null){
+            source1 = new Vertex(source);
+            vertexMap.put(source, source1);
+        }
+        Vertex dest1 = vertexMap.get(dest);
+        if(dest1 == null){
+            dest1 = new Vertex(dest);
+            vertexMap.put(dest, dest1);
+        }
+        Edge e = new Edge(source1, dest1, weight1, capacity1, directed1);
+        edgeList.add(e);
+    }
+
+    public int maxFlow(String source, String sink) {
+        Graph residualGraph = new Graph(this);
+        Vertex src = vertexMap.get(source);
+        Vertex snk = vertexMap.get(sink);
+        int maxFlow = 0;
+        while(residualGraph.bfs(source, sink)){
+            int pathFlow = Integer.MAX_VALUE;
+            Vertex v1 = residualGraph.vertexMap.get(sink);
+            Vertex v = residualGraph.parentMap.get(v1);
+            Vertex rSrc = residualGraph.vertexMap.get(source);
+            System.out.println(residualGraph.parentMap);
+            while(!Objects.equals(v1, rSrc)){
+                 System.out.println(v +" "+v1);
+                int capacity = v1.getIncomingEdges().get(v).getCapacity();
+                pathFlow = Math.min(capacity, pathFlow);
+                v1 = v;
+                v = residualGraph.parentMap.get(v1);
+            }
+            
+            v = parentMap.get(snk);
+            v1 = snk;
+            while(!Objects.equals(v1, rSrc)){
+                System.out.println(v1.getIncomingEdges());
+                int capacity = v1.getIncomingEdges().get(v).getCapacity();
+                if(capacity == pathFlow){
+                    residualGraph.removeEdge(v1.getIncomingEdges().get(v));
+                }
+                else{
+                    v1.getIncomingEdges().get(v).setCapacity(capacity-pathFlow);
+                }
+                v1 = v;
+                v = residualGraph.parentMap.get(v1);
+            }
+            maxFlow += pathFlow;
+        }
+        return maxFlow;
+    }
+    
+    public boolean bfs(String src, String dest){
+        parentMap.clear();
+        Vertex source = vertexMap.get(src);
+        List<String> visited = new ArrayList();
         Queue<Vertex> queue = new LinkedList();
         queue.add(source);
-        source.setDist(0);
+        parentMap.put(source, null);
         while(!queue.isEmpty()){
-            Vertex curr = queue.poll();
-            if(!curr.isVisited()){
-                curr.setVisited(true);
-                System.out.println(curr.getName());
-                for(Vertex v: curr.getOutgoing().keySet()){
-                    int newDist = curr.getDist() + 1;
-                    if(v.getDist() > newDist){
-                        v.setDist(newDist);
-                        v.setVisitedVertices(curr.getVisitedVertices()+" "+curr.getName());
-                        queue.add(v);
-                    }
+            Vertex v = queue.poll();
+            visited.add(v.getValue());
+            v.getOutgoingEdges().keySet().forEach(v1 -> {
+                if(!visited.contains(v1.getValue())){
+                    queue.add(v1);
+                    parentMap.put(v1, v);
                 }
-            }
+            });
         }
-    }
-    
-    public int shortestDistance(String s, String d){
-        bfs(s);
-        Vertex dest = vertexMap.get(d);
-        for(Vertex v: vertexMap.values()){
-            System.out.println(v);
-        }
-        System.out.println(dest.getDist()+" "+dest.getVisitedVertices());
-        return dest.getDist();
-    }
-        
-    public int shortestWtDistance(String s, String d){
-        dijkstra(s);
-        int dist = vertexMap.get(s).getDist();
-        clear();
-        return dist;
-    }
-
-    private void dijkstra(String s) {
-        clear();
-        Vertex source = vertexMap.get(s);
-        if(source == null){
-            return;
-        }
-        PriorityQueue<Vertex> pq = new PriorityQueue<>((a,b) -> a.getDist()-b.getDist());
-        source.setDist(0);
-        pq.add(source);
-        while(!pq.isEmpty()){
-            Vertex curr = pq.poll();
-            for(Vertex adjV: curr.getOutgoing().keySet()){
-                if(adjV.isVisited()){
-                    continue;
-                }
-                adjV.setVisited(true);
-                int newDist = curr.getDist() + curr.getOutgoingEdge(adjV).getWeight();
-                if(adjV.getDist() > newDist){
-                    adjV.setDist(newDist);
-                    adjV.setVisitedVertices(curr.getVisitedVertices()+" "+curr.getName());
-                    pq.add(adjV);
-                }
-            }
-        }
-    }
-    
-    public boolean isCyclePresent(){
-        List<Vertex> markedList = new ArrayList();
-        Vertex v = (Vertex)vertexMap.values().toArray()[0];
-        LinkedList<Vertex> stack = new LinkedList();
-        stack.push(v);
-        markedList.add(v);
-        while(!stack.isEmpty()){
-            Vertex v1 = stack.pop();
-            Set<Vertex> vertexList = v1.getOutgoing().keySet();
-            for(Vertex v2: vertexList){
-                if(markedList.contains(v2)){
-                    return true;
-                }
-                stack.push(v2);
-                markedList.add(v2);
-            }
+        //System.out.println(visited);
+        //System.out.println(parentMap);
+        if(visited.contains(dest)){
+            return true;
         }
         return false;
-        
+    }
+
+    private void addEdge(Edge edge) {
+        addEdge(edge.getSource().getValue(), edge.getDest().getValue(), edge.getWeight(), edge.getCapacity(), edge.isDirected());
     }
 }

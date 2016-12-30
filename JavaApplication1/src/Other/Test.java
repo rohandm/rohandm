@@ -5,6 +5,7 @@
  */
 package Other;
 
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -13,13 +14,15 @@ import java.util.*;
  */
 public class Test {
     public static void main(String args[]){
-        List list1 = method1();
-        List list2 = list.get(0);
-        List<List<Integer>> list3 = new ArrayList();
-        list3.addAll(list);
-        list3.get(0).add(5);
-        System.out.println(list1);
-        System.out.println(list3);
+        long a = System.currentTimeMillis();
+        System.out.println(a);
+        long b = Long.MAX_VALUE-a;
+        System.out.println(b);
+        System.out.println(Long.toBinaryString(b));
+        System.out.println(Long.toBinaryString(b).length());
+        System.out.println(Long.toBinaryString(Long.MAX_VALUE).length());
+        System.out.println(Long.toBinaryString(Long.MAX_VALUE).length());
+        System.out.println(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE).bitLength());
     }
     
     static List<List<Integer>> list = new ArrayList();
@@ -31,3 +34,4 @@ public class Test {
         return list1;
     }
 }
+

@@ -5,144 +5,81 @@
  */
 package graphs;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  *
  * @author rohan_000
  */
 public class Vertex {
-    private HashMap<Vertex, Edge> incoming = new HashMap<Vertex, Edge>();
-    private HashMap<Vertex, Edge> outgoing = new HashMap<Vertex, Edge>();
-    private String name = "";
-    private int dist = Integer.MAX_VALUE;
-    private boolean visited = false;
-    private String visitedVertices = "";
+    private String value;
+    private Map<Vertex, Edge> outgoingEdges;
+    private Map<Vertex, Edge> incomingEdges;
 
-    Vertex(String src){
-        name = src;
-    }
-    
-    public void clear(){
-        setDist(Integer.MAX_VALUE);
-        setVisited(false);
-        setVisitedVertices("");
-    }
-    /**
-     * @return the incoming
-     */
-    public Edge getIncommingEdge(Vertex v) {
-        return getIncoming().get(v);
+    Vertex(String val){
+        value = val;
+        outgoingEdges = new HashMap<>();
+        incomingEdges = new HashMap<>();
     }
 
+    Vertex(Vertex source) {
+        this.value = source.value;
+        outgoingEdges = new HashMap<>();
+        incomingEdges = new HashMap<>();
+    }
     /**
-     * @param incoming the incoming to set
+     * @return the value
      */
-    public void addIncomingEdge(Vertex v, Edge e) {
-        this.getIncoming().put(v, e);
+    public String getValue() {
+        return value;
     }
 
     /**
-     * @return the outgoing
+     * @param value the value to set
      */
-    public Edge getOutgoingEdge(Vertex v) {
-        return getOutgoing().get(v);
+    public void setValue(String value) {
+        this.value = value;
     }
 
     /**
-     * @param outgoing the outgoing to set
+     * @return the map
      */
-    public void addOutgoingEdge(Vertex v, Edge e)  {
-        this.getOutgoing().put(v, e);
+    public Edge getEdge(Vertex v) {
+        return getOutgoingEdges().get(v);
     }
 
     /**
-     * @return the incoming
+     * @param map the map to set
      */
-    public HashMap<Vertex, Edge> getIncoming() {
-        return incoming;
+    public void addToMap(Vertex v, Edge e) {
+        this.getOutgoingEdges().put(v, e);
     }
 
     /**
-     * @param incoming the incoming to set
+     * @return the outgoingEdges
      */
-    public void setIncoming(HashMap<Vertex, Edge> incoming) {
-        this.incoming = incoming;
+    public Map<Vertex, Edge> getOutgoingEdges() {
+        return outgoingEdges;
     }
 
     /**
-     * @return the outgoing
+     * @param outgoingEdges the outgoingEdges to set
      */
-    public HashMap<Vertex, Edge> getOutgoing() {
-        return outgoing;
+    public void addToOutgoingEdges(Vertex v, Edge e){
+        this.outgoingEdges.put(v, e);
     }
 
     /**
-     * @param outgoing the outgoing to set
+     * @return the incomingEdges
      */
-    public void setOutgoing(HashMap<Vertex, Edge> outgoing) {
-        this.outgoing = outgoing;
+    public Map<Vertex, Edge> getIncomingEdges() {
+        return incomingEdges;
     }
 
     /**
-     * @return the name
+     * @param incomingEdges the incomingEdges to set
      */
-    public String getName() {
-        return name;
+    public void addToIncomingEdges(Vertex v, Edge e) {
+        this.incomingEdges.put(v, e);
     }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the dist
-     */
-    public int getDist() {
-        return dist;
-    }
-
-    /**
-     * @param dist the dist to set
-     */
-    public void setDist(int dist) {
-        this.dist = dist;
-    }
-
-    /**
-     * @return the visited
-     */
-    public boolean isVisited() {
-        return visited;
-    }
-
-    /**
-     * @param visited the visited to set
-     */
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
-    /**
-     * @return the visitedVertices
-     */
-    public String getVisitedVertices() {
-        return visitedVertices;
-    }
-
-    @Override
-    public String toString() {
-        return "Vertex{" + "name=" + name + ", dist=" + dist + ", visitedVertices=" + visitedVertices + '}';
-    }
-
-    /**
-     * @param visitedVertices the visitedVertices to set
-     */
-    public void setVisitedVertices(String visitedVertices) {
-        this.visitedVertices = visitedVertices;
-    }
-            
 }

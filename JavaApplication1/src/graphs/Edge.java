@@ -13,7 +13,36 @@ public class Edge {
     private Vertex source;
     private Vertex dest;
     private int weight;
+    private int capacity;
+    private boolean directed;
 
+    Edge(Vertex source1, Vertex dest1, int weight1, int capacity1, boolean directed1){
+        source = source1;
+        dest = dest1;
+        weight = weight1;
+        capacity = capacity1;
+        directed = directed1;
+        source.addToOutgoingEdges(dest, this);
+        dest.addToIncomingEdges(source, this);
+        if(!directed){
+            dest.addToOutgoingEdges(source, this);
+            source.addToIncomingEdges(dest, this);
+        }
+    }
+
+    Edge(Edge e) {
+        this.source = new Vertex(e.getSource());
+        this.dest = new Vertex(e.getDest());
+        this.weight = e.weight;
+        this.capacity = e.capacity;
+        this.directed = e.directed;
+        source.addToOutgoingEdges(dest, this);
+        dest.addToIncomingEdges(source, this);
+        if(!directed){
+            dest.addToOutgoingEdges(source, this);
+            source.addToIncomingEdges(dest, this);
+        }
+    }
     /**
      * @return the source
      */
@@ -55,14 +84,32 @@ public class Edge {
     public void setWeight(int weight) {
         this.weight = weight;
     }
-    
-    Edge(Vertex source, Vertex dest, int weight, boolean directed){
-        dest.getIncoming().put(source, this);
-        source.getOutgoing().put(dest, this);
-        if(!directed){
-            source.getIncoming().put(dest, this);
-            dest.getOutgoing().put(source, this);
-        }
-    
+
+    /**
+     * @return the capacity
+     */
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * @param capacity the capacity to set
+     */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    /**
+     * @return the directed
+     */
+    public boolean isDirected() {
+        return directed;
+    }
+
+    /**
+     * @param directed the directed to set
+     */
+    public void setDirected(boolean directed) {
+        this.directed = directed;
     }
 }

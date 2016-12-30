@@ -23,11 +23,12 @@ public class SortingDemo {
         int[] arr = new int[n];
         IntStream.range(0, n - 1).forEach(i -> arr[i] = (int) ((10000) * Math.random()));
         System.out.println(Arrays.toString(arr));
-        sort("bubbleSort", arr);
-        sort("selectionSort", arr);
-        sort("insertionSort", arr);
-        sort("mergeSort", arr);
-        sort("bucketSort", arr);
+        sort("bubbleSort", Arrays.copyOf(arr, arr.length));
+        sort("selectionSort", Arrays.copyOf(arr, arr.length));
+        sort("insertionSort", Arrays.copyOf(arr, arr.length));
+        sort("mergeSort", Arrays.copyOf(arr, arr.length));
+        sort("bucketSort", Arrays.copyOf(arr, arr.length));
+        sort("quickSort", Arrays.copyOf(arr, arr.length));
     }
 
     public static int[] bubbleSort(int[] input) {
@@ -167,6 +168,41 @@ public class SortingDemo {
         return output;
     }
     
+    public static int[] quickSort(int[] arr){
+        partition(arr, 0, arr.length-1);
+        return arr;
+    }
+    
+    private static void partition(int[] arr, int startInd, int endInd) {
+        int pivot = startInd+(int)((endInd-startInd)*Math.random());
+        //System.out.println(startInd+" "+pivot+" "+endInd);
+        int i = startInd;
+        int j = endInd;
+        if(i >= j){
+            return;
+        }
+        while(i <= pivot && pivot <= j){
+            while(arr[i] < arr[pivot]){
+                i++;
+                //System.out.println((i-1)+" "+arr[i-1]+" "+pivot+" "+arr[pivot]);
+            }
+            while(arr[j] > arr[pivot]){
+                j--;
+                //System.out.println((j+1)+" "+arr[i+1]+" "+pivot+" "+arr[pivot]);
+            }
+            if(i <= j){
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                i++;
+                j--;
+            }
+        }
+        partition(arr, startInd, j);
+        partition(arr, i, endInd);
+    }
+    
+    
     public static int findMax(int[] arr){
         int max = -1;
         if(arr == null){
@@ -177,5 +213,7 @@ public class SortingDemo {
         }
         return max;
     }
+
+
 
 }
