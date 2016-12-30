@@ -5,12 +5,7 @@
  */
 package geeks.graphs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 /**
  *
  * @author rohan_000
@@ -32,21 +27,75 @@ class Vertex {
 public class Graph {
 
     Map<Vertex, List<Edge>> map = new HashMap();
+    Map<String, Vertex> vertexMap = new HashMap();
 
-    public void addEdge(Vertex v, Vertex v1, Edge e, boolean directed) {
-        List<Edge> list = map.get(v);
+    public void addEdge(String src, String dst, int wt, int cp, boolean directed) {
+        Vertex source = vertexMap.get(src);
+        if(source == null){
+            source = new Vertex(src);
+            vertexMap.put(src, source);
+        }
+        Vertex dest = vertexMap.get(dst);
+        if(dest == null){
+            dest = new Vertex(dst);
+            vertexMap.put(dst, dest);
+        }
+        Edge e = new Edge(source, dest, wt, cp);
+        List<Edge> list = map.get(source);
         if (list == null) {
             list = new ArrayList();
-            map.put(v, list);
+            map.put(source, list);
         }
         list.add(e);
         if(!directed){
-            List<Edge> list1 = map.get(v1);
+            List<Edge> list1 = map.get(dest);
             if (list1 == null) {
                 list1 = new ArrayList();
-                map.put(v1, list1);
+                map.put(dest, list1);
             }
             list1.add(e.reverse());
+        }
+    }
+    
+    public void bfs(Vertex v, List<Vertex> visited){
+        if(v == null || visited == null){
+            return;
+        }
+        Queue<Vertex> queue = new LinkedList();
+        queue.add(v);
+        visited.add(v);
+        while(!queue.isEmpty()){
+            Vertex currentV = queue.poll();
+            if(currentV != null){
+                List<Edge> edgeList = map.get(currentV);
+                for(Edge edge: edgeList){
+                    if(!visited.contains(edge.dest)){
+                        queue.add(edge.dest);
+                        visited.add(edge.dest);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void dfs(Vertex v, List<Vertex> visited){
+        if(v == null || visited == null){
+            return;
+        }
+        Deque<Vertex> stack = new LinkedList();
+        stack.push(v);
+        visited.add(v);
+        while(!stack.isEmpty()){
+            Vertex currentV = stack.pop();
+            if(currentV != null){
+                List<Edge> edgeList = map.get(currentV);
+                for(Edge e: edgeList){
+                    if(!visited.contains(e.dest)){
+                        stack.push(e.dest);
+                        visited.add(e.dest);
+                    }
+                }
+            }
         }
     }
 

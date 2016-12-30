@@ -30,27 +30,20 @@ public class GraphColoring {
         graph.addEdge(v3, v4, e34, false);
         System.out.println(bfsColoring(graph));*/
         Graph graph = new Graph();
-        Vertex v1 = new Vertex("1");
-        Vertex v2 = new Vertex("2");
-        Vertex v3 = new Vertex("3");
-        Vertex v4 = new Vertex("4");
-        Vertex v5 = new Vertex("5");
-        Edge e12 = new Edge(v1, v2, 1, 1);
-        Edge e13 = new Edge(v1, v3, 1, 1);
-        Edge e23 = new Edge(v2, v3, 1, 1);
-        Edge e24 = new Edge(v2, v4, 1, 1);
-        Edge e34 = new Edge(v3, v4, 1, 1);
-        Edge e45 = new Edge(v4, v5, 1, 1);
-        graph.addEdge(v1, v2, e12, false);
-        graph.addEdge(v1, v3, e13, false);
-        graph.addEdge(v2, v3, e23, false);
-        graph.addEdge(v2, v4, e24, false);
-        graph.addEdge(v3, v4, e34, false);
-        graph.addEdge(v4, v5, e45, false);
-        greedyColoring(graph);
-        System.out.println(graph);
+        graph.addEdge("1", "2", 1, 1, false);
+        graph.addEdge("1", "3", 1, 1, false);
+        graph.addEdge("2", "3", 1, 1, false);
+        graph.addEdge("2", "4", 1, 1, false);
+        graph.addEdge("3", "4", 1, 1, false);
+        graph.addEdge("4", "5", 1, 1, false);
+        Graph graph1 = GraphUtils.complementGraph(graph);
+        System.out.println(checkIfBipartite(graph1));
+        System.out.println(graph1);
     }
 
+    public static boolean checkIfBipartite(Graph graph){
+        return bfsColoring(graph);
+    }
     //2 color
     public static boolean bfsColoring(Graph graph) {
         Set<Vertex> vertexSet = graph.map.keySet();
@@ -59,6 +52,7 @@ public class GraphColoring {
         }
         Vertex v = (Vertex) vertexSet.toArray()[0];
         Queue<Vertex> queue = new LinkedList();
+        List<Vertex> visited = new ArrayList();
         queue.offer(v);
         String[] color = {"Red", "Green"};
         int parentColorInd = 0;
@@ -66,6 +60,9 @@ public class GraphColoring {
         Map<Vertex, Integer> parentMap = new HashMap();
         while (!queue.isEmpty()) {
             v = queue.poll();
+            if(v == null){
+                continue;
+            }
             Integer parentColorIndWrapper = parentMap.get(v);
             if (parentColorIndWrapper != null) {
                 parentColorInd = parentColorIndWrapper;
@@ -73,15 +70,16 @@ public class GraphColoring {
                     return false;
                 }
             }
-            v.color =  color[1-parentColorIndWrapper];
+            v.color =  color[1-parentColorInd];
             List<Edge> list = graph.map.get(v);
             if(list != null){
                 Iterator<Edge> itr = list.iterator();
                 while (itr.hasNext()) {
                     Vertex neighbour = itr.next().dest;
-                    if(neighbour != null){
+                    if(neighbour != null && !visited.contains(neighbour)){
                         queue.offer(neighbour);
-                        parentMap.put(neighbour, 1-parentColorIndWrapper);
+                        visited.add(neighbour);
+                        parentMap.put(neighbour, 1-parentColorInd);
                     }
                 }
             }
