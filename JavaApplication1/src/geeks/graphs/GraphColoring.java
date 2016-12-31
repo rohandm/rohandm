@@ -30,12 +30,12 @@ public class GraphColoring {
         graph.addEdge(v3, v4, e34, false);
         System.out.println(bfsColoring(graph));*/
         Graph graph = new Graph();
-        graph.addEdge("1", "2", 1, 1, false);
-        graph.addEdge("1", "3", 1, 1, false);
-        graph.addEdge("2", "3", 1, 1, false);
-        graph.addEdge("2", "4", 1, 1, false);
-        graph.addEdge("3", "4", 1, 1, false);
-        graph.addEdge("4", "5", 1, 1, false);
+        graph.addEdge(1, 2, 1, 1, false);
+        graph.addEdge(1, 3, 1, 1, false);
+        graph.addEdge(2, 3, 1, 1, false);
+        graph.addEdge(2, 4, 1, 1, false);
+        graph.addEdge(3, 4, 1, 1, false);
+        graph.addEdge(4, 5, 1, 1, false);
         Graph graph1 = GraphUtils.complementGraph(graph);
         System.out.println(checkIfBipartite(graph1));
         System.out.println(graph1);

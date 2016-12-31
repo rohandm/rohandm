@@ -10,34 +10,47 @@ import java.util.*;
  *
  * @author rohan_000
  */
-class Vertex {
+class Vertex implements Comparable{
 
-    String name;
+    int name;
     String color;
+    int dist = Integer.MAX_VALUE;
+    Vertex parent;
 
-    Vertex(String nm) {
+    Vertex(int nm) {
         name = nm;
     }
 
     public String toString() {
         return "name:" + name + " color: " + color;
     }
+
+    @Override
+    public int compareTo(Object o) {
+        if(o == null || o.getClass() != this.getClass()){
+            return -1;
+        }
+        Vertex v = (Vertex)o;
+        return this.dist - v.dist;
+    }
 }
 
 public class Graph {
 
     Map<Vertex, List<Edge>> map = new HashMap();
-    Map<String, Vertex> vertexMap = new HashMap();
+    Map<Integer, Vertex> vertexMap = new HashMap();
 
-    public void addEdge(String src, String dst, int wt, int cp, boolean directed) {
+    public void addEdge(int src, int dst, int wt, int cp, boolean directed) {
         Vertex source = vertexMap.get(src);
         if(source == null){
             source = new Vertex(src);
+            map.put(source, new ArrayList());
             vertexMap.put(src, source);
         }
         Vertex dest = vertexMap.get(dst);
         if(dest == null){
             dest = new Vertex(dst);
+            map.put(dest, new ArrayList());
             vertexMap.put(dst, dest);
         }
         Edge e = new Edge(source, dest, wt, cp);
@@ -57,7 +70,8 @@ public class Graph {
         }
     }
     
-    public void bfs(Vertex v, List<Vertex> visited){
+    public void bfs(int src, List<Vertex> visited){
+        Vertex v = vertexMap.get(src);
         if(v == null || visited == null){
             return;
         }
@@ -78,7 +92,8 @@ public class Graph {
         }
     }
     
-    public void dfs(Vertex v, List<Vertex> visited){
+    public void dfs(int src, List<Vertex> visited){
+        Vertex v = vertexMap.get(src);
         if(v == null || visited == null){
             return;
         }
@@ -91,12 +106,43 @@ public class Graph {
                 List<Edge> edgeList = map.get(currentV);
                 for(Edge e: edgeList){
                     if(!visited.contains(e.dest)){
+                        e.dest.parent = currentV;
                         stack.push(e.dest);
                         visited.add(e.dest);
                     }
                 }
             }
         }
+    }
+    
+    public List<Vertex> dijkstra(int src){
+        Vertex source = vertexMap.get(src);
+        List<Vertex> visited = new ArrayList();
+        if(source == null){
+            return visited;
+        }
+        for(Vertex v: this.vertexMap.values()){
+            v.dist = Integer.MAX_VALUE;
+        }
+        source.dist = 0;
+        PriorityQueue<Vertex> pq = new PriorityQueue();
+        while(!pq.isEmpty()){
+            Vertex v = pq.poll();
+            visited.add(v);
+            if(v == null || visited.contains(v)){
+                continue;
+            }
+            List<Edge> edgeList = this.map.get(v);
+            for(Edge e: edgeList){
+                if(!visited.contains(e.dest)){
+                    if(e.dest.dist > v.dist+e.weight){
+                        e.dest.dist = v.dist+e.weight;
+                    }
+                    pq.offer(e.dest);
+                }
+            }
+        }
+        return visited;
     }
 
     public String toString() {
